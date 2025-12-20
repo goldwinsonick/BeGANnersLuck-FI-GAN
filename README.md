@@ -3,14 +3,16 @@
 This project aims to design an FPGA-based GAN Architecture for Frame Interpolation. This project is worked on for LSI Contest 2026 and VLSI System Design Final Exam.
 
 ## 📌 Project Overview
-
+```
+```
 ## 📂 Project Structure
 ```
 BeGANnersLuck-FI-GAN
 ├── docs            (Documentation)
-├── project
-│   ├── hdl         (Verilog project)
-│   └── scripts     (Python scripts, etc)
+├── SimpleGAN
+│   ├── matlab      (matlab file (from LSI website, extracted files)
+│   ├── verilog     (Verilog implementation)
+|   └── Makefile   
 └── README.md
 ```
 
