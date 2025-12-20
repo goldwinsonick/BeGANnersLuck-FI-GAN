@@ -8,9 +8,13 @@ This project aims to design an FPGA-based GAN Architecture for Frame Interpolati
 * **Goldwin Sonick** (13222067)
 * **Ibrahim Hanif Mulyana** (13222111)
 
-## 📌 Project Overview
-```
-```
+## 📌 Technical Specifications
+* **Architecture:** Fully Connected Neural Network (Generator & Discriminator).
+* **Data Format:** **Fixed-Point Q8.8** (1 sign, 7 integer, 8 fractional bits).
+* **Optimization:** * **Pipelining:** 2-Stage pipeline (Hidden Layer → Output Layer) to increase throughput.
+  * **Spatial Unrolling:** Parallel computation of neurons to maximize speed over area efficiency.
+* **Verification:** Bit-true comparison against MATLAB reference model (Result Score: ~0.3008 vs MATLAB 0.3672).
+* 
 ## 📂 Project Structure
 ```
 BeGANnersLuck-FI-GAN
