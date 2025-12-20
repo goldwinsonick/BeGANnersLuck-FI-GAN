@@ -12,8 +12,13 @@ BeGANnersLuck-FI-GAN
 ├── docs            (Documentation)
 ├── SimpleGAN
 │   ├── matlab      (matlab file (from LSI website, extracted files)
-│   ├── verilog     (Verilog implementation)
-|   └── Makefile   
+│   └── verilog  
+|        ├── data (Extracted csv)
+|        ├── rtl (Verilog implementation)
+|        ├── tb (Testbench)
+|        ├── SimpleGAN.ipynb
+|        └── Makefile
+├── test/pwl   (Tugas PWL)
 └── README.md
 ```
 
