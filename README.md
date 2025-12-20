@@ -3,6 +3,11 @@
 
 This project aims to design an FPGA-based GAN Architecture for Frame Interpolation. This project is worked on for LSI Contest 2026 and VLSI System Design Final Exam.
 
+## 👥 Team Members (Group 7)
+* **Ihsan Hidayat Rafi** (13222065)
+* **Goldwin Sonick** (13222067)
+* **Ibrahim Hanif Mulyana** (13222111)
+
 ## 📌 Project Overview
 ```
 ```
