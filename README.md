@@ -14,7 +14,7 @@ This project aims to design an FPGA-based GAN Architecture for Frame Interpolati
 * **Optimization:** * **Pipelining:** 2-Stage pipeline (Hidden Layer → Output Layer) to increase throughput.
   * **Spatial Unrolling:** Parallel computation of neurons to maximize speed over area efficiency.
 * **Verification:** Bit-true comparison against MATLAB reference model (Result Score: ~0.3008 vs MATLAB 0.3672).
-* 
+
 ## 📂 Project Structure
 ```
 BeGANnersLuck-FI-GAN
