@@ -1,0 +1,51 @@
+module trans_conv2d_4x4_layer #(
+    parameter IN_WIDTH   = 8, // Default kecil
+    parameter DATA_WIDTH = 16
+)(
+    input  wire clk,
+    input  wire rst_n,
+    
+    // Input Stream (Langsung, Tanpa FIFO)
+    input  wire valid_in,
+    input  wire signed [DATA_WIDTH-1:0] data_in,
+    
+    // Weights
+    input  wire signed [DATA_WIDTH-1:0] w0, w1, w2, w3,
+    input  wire signed [DATA_WIDTH-1:0] w4, w5, w6, w7,
+    input  wire signed [DATA_WIDTH-1:0] w8, w9, w10, w11,
+    input  wire signed [DATA_WIDTH-1:0] w12, w13, w14, w15,
+    input  wire signed [DATA_WIDTH-1:0] bias,
+
+    output wire valid_out,
+    output wire signed [DATA_WIDTH-1:0] data_out
+);
+
+    wire up_valid;
+    wire signed [DATA_WIDTH-1:0] up_data;
+    wire up_ready; // Diabaikan karena kita atur pakai timing testbench
+
+    // Upsample: IN_WIDTH -> 2*IN_WIDTH
+    upsample_layer #(
+        .IN_WIDTH(IN_WIDTH), 
+        .DATA_WIDTH(DATA_WIDTH)
+    ) u_inst (
+        .clk(clk), .rst_n(rst_n),
+        .valid_in(valid_in), .data_in(data_in),
+        .ready_in(up_ready), 
+        .valid_out(up_valid), .data_out(up_data)
+    );
+
+    // Conv: 2*IN_WIDTH -> Output
+    conv2d_4x4_layer #(
+        .IMG_WIDTH(IN_WIDTH * 2), 
+        .DATA_WIDTH(DATA_WIDTH)
+    ) c_inst (
+        .clk(clk), .rst_n(rst_n),
+        .valid_in(up_valid), .data_in(up_data),
+        .w0(w0), .w1(w1), .w2(w2), .w3(w3), .w4(w4), .w5(w5), .w6(w6), .w7(w7),
+        .w8(w8), .w9(w9), .w10(w10), .w11(w11), .w12(w12), .w13(w13), .w14(w14), .w15(w15),
+        .bias(bias),
+        .valid_out(valid_out), .data_out(data_out)
+    );
+
+endmodule
