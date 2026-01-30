@@ -2,7 +2,7 @@ MODULE ?= and_32
 
 build:
 	mkdir -p build
-	iverilog -o build/$(MODULE)_tb tb/$(MODULE)_tb.v rtl/*.v
+	iverilog -o build/$(MODULE)_tb tb/$(MODULE)_tb.v rtl/*.v rtl/test_weights/*.v rtl/weights/*.v
 
 run: build
 	vvp build/$(MODULE)_tb

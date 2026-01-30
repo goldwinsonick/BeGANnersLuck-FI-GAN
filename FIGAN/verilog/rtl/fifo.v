@@ -1,6 +1,6 @@
 module fifo #(
     parameter DATA_WIDTH = 16,
-    parameter DEPTH = 1024 // Ukuran aman
+    parameter DEPTH = 1024
 )(
     input  wire clk, rst_n,
     input  wire wr_en,

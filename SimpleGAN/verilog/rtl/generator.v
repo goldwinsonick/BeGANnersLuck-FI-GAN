@@ -8,8 +8,8 @@ module generator (
     input wire signed [15:0] z1, z2,
 
     // Weight Inputs (Flattened Q8.8)
-    input wire [143:0] flat_weights_L1, // 9 params (3 neurons * 3)
-    input wire [575:0] flat_weights_L2, // 36 params (9 neurons * 4)
+    input wire [143:0] flat_weights_L1, // 9 params (3 neurons * 3)L2, // 36 params (9 neurons * 4)
+    input wire [575:0] flat_weights_
 
     // Outputs
     output wire valid_out,

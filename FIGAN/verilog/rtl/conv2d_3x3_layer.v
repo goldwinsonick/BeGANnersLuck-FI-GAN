@@ -30,12 +30,10 @@ module conv2d_3x3_layer #(
     reg [9:0] y_cnt;
     integer i;
 
-    // Pipeline Register (PENTING UNTUK FIX GESER)
+    // Pipeline Register
     reg valid_req; 
 
-    // --- Instantiate Multipliers (FIXED MAPPING) ---
-    // Mapping dibalik: w0 (top-left weight) dikali win[8] (oldest pixel/top-left)
-    // Ini memperbaiki masalah gambar terbalik/rotasi 180 derajat.
+    // --- Instantiate Multipliers ---
     qmult m0(win[8], w0, p[0]);
     qmult m1(win[7], w1, p[1]);
     qmult m2(win[6], w2, p[2]);
@@ -60,7 +58,6 @@ module conv2d_3x3_layer #(
             valid_out <= 0;
             data_out  <= 0;
             
-            // FIX: Initialize Memory to Zero to prevent 'x' (undefined state)
             for (i = 0; i < IMG_WIDTH; i = i + 1) begin
                 line_buff_0[i] <= 0;
                 line_buff_1[i] <= 0;
@@ -98,10 +95,6 @@ module conv2d_3x3_layer #(
             end
 
             // 4. Output Logic (PIPELINED)
-            // Fix masalah "kegeser": Kita request valid dulu, baru dikeluarkan cycle depan.
-            // Saat y_cnt & x_cnt memenuhi syarat, window baru terbentuk tapi 'sum'
-            // belum stabil untuk dicapture di cycle yang sama.
-            
             if (y_cnt >= 2 && x_cnt >= 2) begin
                 valid_req <= 1;
             end else begin

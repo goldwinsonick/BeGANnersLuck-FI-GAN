@@ -1,5 +1,9 @@
-module conv2d_4x4_layer #(
-    parameter IMG_WIDTH  = 16,
+// [conv2d_4x4_stride2_layer.v] 
+// Convolution with Stride 2 (Downsampling).
+// Used for Encoder Layers. 
+// Input Resolution: N x N -> Output Resolution: N/2 x N/2
+module conv2d_4x4_stride2_layer #(
+    parameter IMG_WIDTH  = 32, // Input Width
     parameter DATA_WIDTH = 16
 )(
     input  wire clk,
@@ -18,8 +22,7 @@ module conv2d_4x4_layer #(
     output reg  signed [DATA_WIDTH-1:0] data_out
 );
 
-    // --- Internal Memory (3 Line Buffers for 4x4 kernel) ---
-    // Butuh 3 buffer karena kernel 4x4 mengakses 4 baris data (3 dari buffer, 1 input langsung)
+    // --- Internal Memory (3 Line Buffers) ---
     reg signed [DATA_WIDTH-1:0] line_buff_0 [0:IMG_WIDTH-1];
     reg signed [DATA_WIDTH-1:0] line_buff_1 [0:IMG_WIDTH-1];
     reg signed [DATA_WIDTH-1:0] line_buff_2 [0:IMG_WIDTH-1];
@@ -31,10 +34,11 @@ module conv2d_4x4_layer #(
     wire signed [DATA_WIDTH-1:0] p[0:15]; 
     wire signed [DATA_WIDTH-1:0] sum;
     
+    // Counters for Input Coordinates
     reg [9:0] x_cnt, y_cnt;
     integer i;
 
-    // --- Step 1: Instantiate 16 Multipliers (FULL) ---
+    // --- Step 1: Instantiate 16 Multipliers ---
     qmult m0 (win[15], w0,  p[0]);
     qmult m1 (win[14], w1,  p[1]);
     qmult m2 (win[13], w2,  p[2]);
@@ -94,7 +98,7 @@ module conv2d_4x4_layer #(
             end
 
             // --- Step 4: Update 4x4 Window ---
-            // Row 0 (Newest/Input)
+            // Row 0 (Newest)
             win[0] <= data_in; 
             win[1] <= win[0]; win[2] <= win[1]; win[3] <= win[2];
             
@@ -118,19 +122,29 @@ module conv2d_4x4_layer #(
                 x_cnt <= x_cnt + 1;
             end
 
-            // --- Step 6: Check Valid ---
-            // Buffer full after 3 rows + 3 pixels
-            if (y_cnt >= 3 && x_cnt >= 3) 
-                valid_req <= 1;
-            else
+            // --- Step 6: Stride 2 Logic ---
+            // Wait until buffer is full (at least 3 rows and 3 cols).
+            // For Stride 2, we only pick samples where the window ends at odd indices (3, 5, 7...).
+            // This effectively skips every other pixel.
+            // x_cnt[0] == 1 means "odd number".
+            
+            if (y_cnt >= 3 && x_cnt >= 3) begin
+                if (x_cnt[0] == 1'b1 && y_cnt[0] == 1'b1) begin
+                    valid_req <= 1;
+                end else begin
+                    valid_req <= 0;
+                end
+            end else begin
                 valid_req <= 0;
+            end
 
-            // Delay 1 cycle agar sinkron dengan data_out <= sum
+            // Output reg update
             valid_out <= valid_req;
             data_out  <= sum;
-        end
+        end 
         else begin
-            valid_out <= valid_req;
+            // If input is not valid, push out the last calculated value (if valid_req was high)
+            valid_out <= valid_req; 
             data_out  <= sum;
 
             valid_req <= 0;
